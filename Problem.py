@@ -4,9 +4,11 @@ from Osobnik import Osobnik
 
 
 class Problem:
-    n_tasks = 20
-    populacja = 60
-    pokolenia = 100
+    n_tasks = 30
+    populacja = 100
+    pokolenia = 200
+    szansa_mutacji = 0.003
+    n_procent_najlepszych = 10
 
     def __init__(self):
         self.lista_zadan = np.random.randint(10, 20, size=[1, self.n_tasks])[0]
@@ -41,12 +43,14 @@ class Problem:
 
         good_ones = []
 
-        for j in range(int(self.n_tasks/10)):
+        for j in range(int(self.n_procent_najlepszych/self.n_tasks)):
             max = pop[0]
-            for j, i in enumerate(pop):
+            n_max = 0
+            for k, i in enumerate(pop):
                 if i.wartosc < max.wartosc:
                     max = i
-            good_ones.append(pop.pop(j))
+                    n_max = k
+            good_ones.append(pop.pop(n_max))
 
         wartosc_calk = sum([i.wartosc for i in pop])
         prob = np.array([i.wartosc / wartosc_calk for i in pop]) #TODO złe liczeie prawdopodobienstwa
@@ -91,15 +95,14 @@ class Problem:
             print(f'Różnica między procesamai: {avg / self.populacja} {max} osobnik: {debesiak}')
 
             x.append(j)
-            y.append(avg / self.populacja)
+            y.append(max)
 
             pop = self.krzyzowanie(pop)
 
-        '''   
+
         plt.plot(x, y)
         plt.xlabel('Pokolenia')
         plt.ylabel('Średnia wartość')
         plt.title('Algorytm genetyczny')
         plt.show()
-        print(sum(self.lista_zadan))'''
-
+        print(sum(self.lista_zadan))
